@@ -66,6 +66,14 @@ class MainActivity : ComponentActivity() {
                     val dataGen: (items: Array<BoardItem>) -> Unit = { items ->
                         map.clear()
 
+                        val occupiedSet = mutableSetOf<String>()
+                        for (r in 0 until maxRow) {
+                            for (c in 0 until maxCol) {
+                                occupiedSet.add("${c}_$r")
+                            }
+                        }
+
+                        val itemSize = items.size
                         for ((i, item) in items.withIndex()) {
                             Logger.debug("gen item: $item")
                             val colorStr = data.colorSet[item.colorIndex]
@@ -78,6 +86,19 @@ class MainActivity : ComponentActivity() {
                                         item.pos.y),
                                     Color(colorStr.toLong(radix = 16))
                                 ))
+                            occupiedSet.remove("${item.pos.x}_${item.pos.y}")
+                        }
+
+                        for ((i, posStr) in occupiedSet.withIndex()) {
+                            val parts = posStr.split("_")
+
+                            map.add(
+                                Item(i + itemSize,
+                                    Point(
+                                        parts[0].toInt(),
+                                        parts[1].toInt()),
+                                    Color.Transparent)
+                                )
                         }
                     }
 
