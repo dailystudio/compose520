@@ -35,7 +35,7 @@ fun Board(modifier: Modifier = Modifier,
         Canvas(modifier = Modifier.fillMaxSize()) {
             gridWidth = (size.width / col)
             gridHeight = (size.height / row)
-            Logger.debug("grid: $gridWidth * $gridHeight")
+//            Logger.debug("grid: $gridWidth * $gridHeight")
 
             drawRect(Color.Yellow, Offset.Zero, size)
 
