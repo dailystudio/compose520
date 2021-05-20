@@ -32,8 +32,10 @@ class MainActivity : ComponentActivity() {
             Color.Magenta,
             Color.Gray,
         )
+
+        val RANDOM: Random = Random
     }
-    val r: Random = Random
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,20 +45,20 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     val map = remember { mutableStateListOf<Item>() }
-                    val maxRow by remember { mutableStateOf(24) }
-                    val maxCol by remember { mutableStateOf(20) }
+                    val maxRow by remember { mutableStateOf(27) }
+                    val maxCol by remember { mutableStateOf(15) }
                     var currGridIndex by remember { mutableStateOf(0)}
                     var data by remember { mutableStateOf(BoardData())}
 
                     val randomGen = {
                         map.clear()
-                        for (i in 0 until r.nextInt(100, 200)) {
+                        for (i in 0 until RANDOM.nextInt(100, 200)) {
                             map.add(
                                 Item(i,
                                     Point(
-                                        r.nextInt(0, maxCol),
-                                        r.nextInt(0, maxRow)),
-                                    ALL_COLORS[r.nextInt(0, ALL_COLORS.size)]
+                                        RANDOM.nextInt(0, maxCol),
+                                        RANDOM.nextInt(0, maxRow)),
+                                    ALL_COLORS[RANDOM.nextInt(0, ALL_COLORS.size)]
                                 ))
                         }
                     }
@@ -95,6 +97,8 @@ class MainActivity : ComponentActivity() {
                     Board(
                         row = maxRow, col = maxCol,
                         data = map,
+                        showGrid = true,
+                        debugPos = false,
                         modifier = Modifier.clickable(
                             interactionSource = interactionSource,
                             indication = null
