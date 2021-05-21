@@ -106,16 +106,14 @@ class MainActivity : ComponentActivity() {
 
             val coroutineScope = rememberCoroutineScope()
 
-            LaunchedEffect(1) {
-                launch {
-                    data = JSONUtils.fromAsset(this@MainActivity,
-                        "data.json", BoardData::class.java) ?: BoardData()
+            coroutineScope.launch {
+                data = JSONUtils.fromAsset(this@MainActivity,
+                    "data.json", BoardData::class.java) ?: BoardData()
 
-                    Logger.debug("data: $data")
+                Logger.debug("data: $data")
 
-                    currGridIndex = 0
-                    dataGen(data.grids[currGridIndex])
-                }
+                currGridIndex = 0
+                dataGen(data.grids[currGridIndex])
             }
 
             Compose520Theme(){
