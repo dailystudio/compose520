@@ -6,7 +6,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import com.dailystudio.compose.loveyou.Item
-import com.dailystudio.devbricksx.development.Logger
 
 
 class GridTransition(val mapX: Map<Int, State<Int>>,
@@ -25,9 +24,6 @@ fun updateGridTransition(data: List<Item>,
 ): GridTransition {
     val mapX = mutableMapOf<Int, State<Int>>()
     val mapY = mutableMapOf<Int, State<Int>>()
-    Logger.debug("GT data: $data")
-    Logger.debug("GT data.size: ${data.size}")
-    Logger.debug("GT gridSize: $gridSize")
 
     for (i in data.indices) {
         mapX[i] = animateIntAsState(
@@ -41,11 +37,7 @@ fun updateGridTransition(data: List<Item>,
         )
     }
 
-    Logger.debug("GT mapX: $mapX")
-    Logger.debug("GT mapY: $mapY")
-
     val transition = GridTransition(mapX, mapY)
-    Logger.debug("GT data[${data.hashCode()}].transition created [${transition.hashCode()}]: $transition")
 
     return remember(System.currentTimeMillis()) {
         transition

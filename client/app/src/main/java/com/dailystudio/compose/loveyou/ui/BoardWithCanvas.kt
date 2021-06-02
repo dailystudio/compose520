@@ -26,7 +26,6 @@ fun BoardWithCanvas(
     GridBoard(modifier, row, col, data, showGrid, debugPos) {
         Canvas(modifier = modifier.fillMaxSize()) {
             for ((index, item) in data.withIndex()) {
-                //            Logger.debug("GT: $transition")
                 val x = transition.mapX[index]?.value?.toFloat() ?: 0f
                 val y = transition.mapY[index]?.value?.toFloat() ?: 0f
 

@@ -48,8 +48,6 @@ fun GridBoard(modifier: Modifier = Modifier,
         },
         contentAlignment = Alignment.BottomCenter
     ) {
-        Logger.debug("GT data[${data.hashCode()}].transition [${transition.hashCode()}]: $transition ")
-
         content(scopeIml)
 
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -90,7 +88,6 @@ fun GridBoard(modifier: Modifier = Modifier,
                         val left = c * gridWidth
                         val top = r * gridHeight + gridHeight / 2
                         drawIntoCanvas {
-
                             it.nativeCanvas.drawText("$c.$r", left, top, paint)
                         }
                     }

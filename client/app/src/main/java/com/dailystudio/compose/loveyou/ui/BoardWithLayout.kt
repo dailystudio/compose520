@@ -31,7 +31,6 @@ fun BoardWithLayout(modifier: Modifier = Modifier,
             }
         ) { measurables, constraints ->
             val placeables = measurables.map { measurable ->
-                measurable.parentData
                 val placeable = measurable.measure(
                     constraints.copy(
                         minWidth = gridWidth.roundToInt(),
