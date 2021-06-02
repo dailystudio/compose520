@@ -6,11 +6,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import com.dailystudio.compose.loveyou.data.BoardData
 import com.dailystudio.compose.loveyou.data.BoardItem
 import com.dailystudio.compose.loveyou.ui.BoardWithCanvas
@@ -23,21 +25,6 @@ import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
 
-    companion object {
-        val ALL_COLORS = arrayOf(
-            Color.Red,
-            Color.Blue,
-            Color.Green,
-            Color.Cyan,
-            Color.Black,
-            Color.Magenta,
-            Color.Gray,
-        )
-
-        val RANDOM: Random = Random
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,20 +34,9 @@ class MainActivity : ComponentActivity() {
             val maxCol by remember { mutableStateOf(15) }
             var currGridIndex by remember { mutableStateOf(-1)}
             var data by remember { mutableStateOf(BoardData())}
-            var dataSerial by remember { mutableStateOf(0L)}
 
-
-            val randomGen = {
-                map.clear()
-                for (i in 0 until RANDOM.nextInt(100, 200)) {
-                    map.add(
-                        Item(i,
-                            Point(
-                                RANDOM.nextInt(0, maxCol),
-                                RANDOM.nextInt(0, maxRow)),
-                            ALL_COLORS[RANDOM.nextInt(0, ALL_COLORS.size)]
-                        ))
-                }
+            var useCanvasRender by remember {
+                mutableStateOf(true)
             }
 
             val dataGen: (items: Array<BoardItem>) -> Unit = { items ->
@@ -98,10 +74,6 @@ class MainActivity : ComponentActivity() {
                             Color.Transparent)
                     )
                 }
-
-                dataSerial = System.currentTimeMillis()
-
-                Logger.debug("new data[$dataSerial]: $data")
             }
 
             val coroutineScope = rememberCoroutineScope()
@@ -118,38 +90,60 @@ class MainActivity : ComponentActivity() {
             }
 
             Compose520Theme(){
-                Surface(color = MaterialTheme.colors.background) {
-                    val interactionSource = remember { MutableInteractionSource() }
-                    if (false) {
-                        BoardWithCanvas(
-                            row = maxRow, col = maxCol,
-                            data = map,
-                            showGrid = true,
-                            debugPos = false,
-                            modifier = Modifier.clickable(
-                                interactionSource = interactionSource,
-                                indication = null
-                            ) {
-                                currGridIndex = (currGridIndex + 1) % data.grids.size
-                                Logger.debug("click: index = $currGridIndex")
-                                dataGen(data.grids[currGridIndex])
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(text = stringResource(id = R.string.app_name))
+                            },
+                            actions = {
+                                IconButton(onClick = {
+                                    useCanvasRender = !useCanvasRender
+                                }) {
+                                    if (useCanvasRender) {
+                                        Icon(Icons.Default.ViewCompact,
+                                            "Layout")
+                                    } else {
+                                        Icon(Icons.Default.AppRegistration, "Canvas")
+                                    }
+                                }
                             }
                         )
-                    } else {
-                        BoardWithLayout(
-                            row = maxRow, col = maxCol,
-                            data = map,
-                            showGrid = true,
-                            debugPos = false,
-                            modifier = Modifier.clickable(
-                                interactionSource = interactionSource,
-                                indication = null
-                            ) {
-                                currGridIndex = (currGridIndex + 1) % data.grids.size
-                                Logger.debug("click: index = $currGridIndex")
-                                dataGen(data.grids[currGridIndex])
-                            }
-                        )
+                    }
+                ) {
+                    Surface(color = MaterialTheme.colors.background) {
+                        val interactionSource = remember { MutableInteractionSource() }
+                        if (useCanvasRender) {
+                            BoardWithCanvas(
+                                row = maxRow, col = maxCol,
+                                data = map,
+                                showGrid = true,
+                                debugPos = false,
+                                modifier = Modifier.clickable(
+                                    interactionSource = interactionSource,
+                                    indication = null
+                                ) {
+                                    currGridIndex = (currGridIndex + 1) % data.grids.size
+                                    Logger.debug("click: index = $currGridIndex")
+                                    dataGen(data.grids[currGridIndex])
+                                }
+                            )
+                        } else {
+                            BoardWithLayout(
+                                row = maxRow, col = maxCol,
+                                data = map,
+                                showGrid = true,
+                                debugPos = false,
+                                modifier = Modifier.clickable(
+                                    interactionSource = interactionSource,
+                                    indication = null
+                                ) {
+                                    currGridIndex = (currGridIndex + 1) % data.grids.size
+                                    Logger.debug("click: index = $currGridIndex")
+                                    dataGen(data.grids[currGridIndex])
+                                }
+                            )
+                        }
                     }
                 }
             }
