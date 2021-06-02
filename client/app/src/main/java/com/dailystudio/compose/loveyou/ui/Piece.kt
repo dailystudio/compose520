@@ -1,4 +1,4 @@
-package com.dailystudio.compose.loveyou
+package com.dailystudio.compose.loveyou.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.height
@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dailystudio.compose.loveyou.ui.theme.Compose520Theme
-import com.dailystudio.devbricksx.development.Logger
 
 @Composable
 fun Piece(color: Color,

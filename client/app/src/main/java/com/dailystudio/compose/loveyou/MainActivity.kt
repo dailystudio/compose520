@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.dailystudio.compose.loveyou.data.BoardData
 import com.dailystudio.compose.loveyou.data.BoardItem
-import com.dailystudio.compose.loveyou.ui.Board
-import com.dailystudio.compose.loveyou.ui.BoardCanvas
+import com.dailystudio.compose.loveyou.ui.BoardWithCanvas
+import com.dailystudio.compose.loveyou.ui.BoardWithLayout
 import com.dailystudio.compose.loveyou.ui.theme.Compose520Theme
 import com.dailystudio.devbricksx.development.Logger
 import com.dailystudio.devbricksx.utils.JSONUtils
@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
             val map = remember { mutableStateListOf<Item>() }
             val maxRow by remember { mutableStateOf(27) }
             val maxCol by remember { mutableStateOf(15) }
-            var currGridIndex by remember { mutableStateOf(0)}
+            var currGridIndex by remember { mutableStateOf(-1)}
             var data by remember { mutableStateOf(BoardData())}
             var dataSerial by remember { mutableStateOf(0L)}
 
@@ -114,26 +114,43 @@ class MainActivity : ComponentActivity() {
 
                 currGridIndex = 0
                 dataGen(data.grids[currGridIndex])
+
             }
 
             Compose520Theme(){
-                // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     val interactionSource = remember { MutableInteractionSource() }
-                    BoardCanvas(
-                        row = maxRow, col = maxCol,
-                        data = map,
-                        showGrid = true,
-                        debugPos = false,
-                        modifier = Modifier.clickable(
-                            interactionSource = interactionSource,
-                            indication = null
-                        ) {
-                            currGridIndex = (currGridIndex + 1) % data.grids.size
-                            Logger.debug("click: index = $currGridIndex")
-                            dataGen(data.grids[currGridIndex])
-                        }
-                    )
+                    if (false) {
+                        BoardWithCanvas(
+                            row = maxRow, col = maxCol,
+                            data = map,
+                            showGrid = true,
+                            debugPos = false,
+                            modifier = Modifier.clickable(
+                                interactionSource = interactionSource,
+                                indication = null
+                            ) {
+                                currGridIndex = (currGridIndex + 1) % data.grids.size
+                                Logger.debug("click: index = $currGridIndex")
+                                dataGen(data.grids[currGridIndex])
+                            }
+                        )
+                    } else {
+                        BoardWithLayout(
+                            row = maxRow, col = maxCol,
+                            data = map,
+                            showGrid = true,
+                            debugPos = false,
+                            modifier = Modifier.clickable(
+                                interactionSource = interactionSource,
+                                indication = null
+                            ) {
+                                currGridIndex = (currGridIndex + 1) % data.grids.size
+                                Logger.debug("click: index = $currGridIndex")
+                                dataGen(data.grids[currGridIndex])
+                            }
+                        )
+                    }
                 }
             }
         }
