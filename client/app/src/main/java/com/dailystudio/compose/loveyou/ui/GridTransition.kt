@@ -37,9 +37,5 @@ fun updateGridTransition(data: List<Item>,
         )
     }
 
-    val transition = GridTransition(mapX, mapY)
-
-    return remember(System.currentTimeMillis()) {
-        transition
-    }
+    return GridTransition(mapX, mapY)
 }

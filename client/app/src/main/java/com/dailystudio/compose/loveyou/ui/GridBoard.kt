@@ -16,10 +16,27 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.toSize
 import com.dailystudio.compose.loveyou.Item
-import com.dailystudio.devbricksx.development.Logger
 
 @DslMarker
 annotation class GridBoardScopeMarker
+
+@GridBoardScopeMarker
+interface GridBoardScope {
+
+    @Stable
+    val gridWidth: Float
+
+    @Stable
+    val gridHeight: Float
+
+    @Stable
+    val transition: GridTransition
+
+}
+
+class GridBoardScopeImpl(override val gridWidth: Float,
+                        override val gridHeight: Float,
+                        override val transition: GridTransition): GridBoardScope
 
 @Composable
 fun GridBoard(modifier: Modifier = Modifier,
@@ -38,7 +55,7 @@ fun GridBoard(modifier: Modifier = Modifier,
         Size(gridWidth, gridHeight)
     )
 
-    val scopeIml = GridBoardScopeIml(gridWidth, gridHeight, transition)
+    val scopeImpl = GridBoardScopeImpl(gridWidth, gridHeight, transition)
 
     Box(modifier = modifier.fillMaxSize()
         .onGloballyPositioned { coordinates ->
@@ -48,7 +65,7 @@ fun GridBoard(modifier: Modifier = Modifier,
         },
         contentAlignment = Alignment.BottomCenter
     ) {
-        content(scopeIml)
+        content(scopeImpl)
 
         Canvas(modifier = Modifier.fillMaxSize()) {
             if (showGrid) {
@@ -96,26 +113,5 @@ fun GridBoard(modifier: Modifier = Modifier,
         }
 
     }
-
-}
-
-
-@GridBoardScopeMarker
-interface GridBoardScope {
-
-    @Stable
-    val gridWidth: Float
-
-    @Stable
-    val gridHeight: Float
-
-    @Stable
-    val transition: GridTransition
-
-}
-
-class GridBoardScopeIml(override val gridWidth: Float,
-                        override val gridHeight: Float,
-                        override val transition: GridTransition): GridBoardScope {
 
 }
