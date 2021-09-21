@@ -16,6 +16,7 @@ class BoardItem {
 
 class BoardData {
 
+    var backgrounds: Array<String> = arrayOf()
     var colorSet: Array<String> = arrayOf()
     var grids: Array<Array<BoardItem>> = arrayOf()
 

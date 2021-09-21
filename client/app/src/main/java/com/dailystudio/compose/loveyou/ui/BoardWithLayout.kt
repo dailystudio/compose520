@@ -7,8 +7,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dailystudio.compose.loveyou.Item
+import com.dailystudio.compose.loveyou.R
 import kotlin.math.roundToInt
 
 
@@ -53,7 +55,7 @@ fun BoardWithLayout(modifier: Modifier = Modifier,
             }
         }
 
-        Text("Powered by Layout",
+        Text(stringResource(id = R.string.power_by_layout),
             color = Color.Gray,
             style = MaterialTheme.typography.subtitle2,
             modifier = Modifier.padding(4.dp)

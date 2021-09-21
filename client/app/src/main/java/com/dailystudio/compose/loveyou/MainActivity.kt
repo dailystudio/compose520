@@ -25,6 +25,10 @@ import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
 
+    companion object {
+        const val DEBUG = false
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,7 +43,8 @@ class MainActivity : ComponentActivity() {
                 mutableStateOf(true)
             }
 
-            val dataGen: (items: Array<BoardItem>) -> Unit = { items ->
+            val dataGen: (background: String,
+                          items: Array<BoardItem>) -> Unit = { background, items ->
                 map.clear()
 
                 val occupiedSet = mutableSetOf<String>()
@@ -71,21 +76,24 @@ class MainActivity : ComponentActivity() {
                             Point(
                                 parts[0].toInt(),
                                 parts[1].toInt()),
-                            Color.Transparent)
+                            Color(background.toLong(radix = 16)))
                     )
                 }
+
+                map.shuffle()
             }
 
             val coroutineScope = rememberCoroutineScope()
 
             coroutineScope.launch {
                 data = JSONUtils.fromAsset(this@MainActivity,
-                    "data.json", BoardData::class.java) ?: BoardData()
+                    "data-mid-autumn.json", BoardData::class.java) ?: BoardData()
 
                 Logger.debug("data: $data")
 
                 currGridIndex = 0
-                dataGen(data.grids[currGridIndex])
+                dataGen(data.backgrounds[currGridIndex],
+                    data.grids[currGridIndex])
 
             }
 
@@ -118,14 +126,15 @@ class MainActivity : ComponentActivity() {
                                 row = maxRow, col = maxCol,
                                 data = map,
                                 showGrid = true,
-                                debugPos = false,
+                                debugPos = DEBUG,
                                 modifier = Modifier.clickable(
                                     interactionSource = interactionSource,
                                     indication = null
                                 ) {
                                     currGridIndex = (currGridIndex + 1) % data.grids.size
                                     Logger.debug("click: index = $currGridIndex")
-                                    dataGen(data.grids[currGridIndex])
+                                    dataGen(data.backgrounds[currGridIndex],
+                                        data.grids[currGridIndex])
                                 }
                             )
                         } else {
@@ -133,14 +142,15 @@ class MainActivity : ComponentActivity() {
                                 row = maxRow, col = maxCol,
                                 data = map,
                                 showGrid = true,
-                                debugPos = false,
+                                debugPos = DEBUG,
                                 modifier = Modifier.clickable(
                                     interactionSource = interactionSource,
                                     indication = null
                                 ) {
                                     currGridIndex = (currGridIndex + 1) % data.grids.size
                                     Logger.debug("click: index = $currGridIndex")
-                                    dataGen(data.grids[currGridIndex])
+                                    dataGen(data.backgrounds[currGridIndex],
+                                        data.grids[currGridIndex])
                                 }
                             )
                         }

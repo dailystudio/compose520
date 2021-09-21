@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">520 Compose</string>
+    <string name="app_name">Mid Autumn Compose</string>
+    <string name="power_by_canvas">Powered By Canvas / Jetpack Compose</string>
+    <string name="power_by_layout">Powered By Layout / Jetpack Compose</string>
 </resources>
