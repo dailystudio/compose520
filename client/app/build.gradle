@@ -4,8 +4,8 @@ plugins {
 }
 
 android {
-    compileSdk 30
-    buildToolsVersion "30.0.3"
+    compileSdk 31
+    buildToolsVersion "32.0.0"
 
     defaultConfig {
         applicationId "com.dailystudio.compose.loveyou"
