@@ -13,15 +13,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.lifecycleScope
 import com.dailystudio.compose.loveyou.data.BoardData
 import com.dailystudio.compose.loveyou.data.BoardItem
+import com.dailystudio.compose.loveyou.interactive.Jill
+import com.dailystudio.compose.loveyou.interactive.Jack
+import com.dailystudio.compose.loveyou.interactive.JackAndJill
 import com.dailystudio.compose.loveyou.ui.BoardWithCanvas
 import com.dailystudio.compose.loveyou.ui.BoardWithLayout
 import com.dailystudio.compose.loveyou.ui.theme.Compose520Theme
 import com.dailystudio.devbricksx.development.Logger
 import com.dailystudio.devbricksx.utils.JSONUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
 
@@ -29,8 +33,13 @@ class MainActivity : ComponentActivity() {
         const val DEBUG = false
     }
 
+    private var onlineTime: Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        jack = Jack(this)
+        jill = Jill(this)
 
         setContent {
             val map = remember { mutableStateListOf<Item>() }
@@ -90,14 +99,37 @@ class MainActivity : ComponentActivity() {
                     data = JSONUtils.fromAsset(this@MainActivity,
                         "data-valentines-day.json", BoardData::class.java) ?: BoardData()
 
-                    Logger.debug("data: $data")
+//                    Logger.debug("data: $data")
 
-                    currGridIndex = 0
+                    currGridIndex = 2
                     dataGen(data.backgrounds[currGridIndex],
                         data.grids[currGridIndex])
 
+                    Logger.debug("data ready for jill")
                 }
             })
+
+            jack.jillFound.observe(this) {
+                currGridIndex = if (it == null) {
+                    2
+                } else {
+                    val online = it.replaceFirst(JackAndJill.SERVICE_BASE_NAME, "").toLong()
+                    when {
+                        online < onlineTime -> 0
+                        online > onlineTime -> 1
+                        else -> 2
+                    }
+                }
+                Logger.debug("jill changed: [$it]")
+                Logger.debug("jill jack online: $onlineTime, index -> $currGridIndex")
+
+                if (data.backgrounds.isNotEmpty()) {
+                    dataGen(
+                        data.backgrounds[currGridIndex],
+                        data.grids[currGridIndex]
+                    )
+                }
+            }
 
             Compose520Theme(){
                 Scaffold(
@@ -133,10 +165,12 @@ class MainActivity : ComponentActivity() {
                                     interactionSource = interactionSource,
                                     indication = null
                                 ) {
+/*
                                     currGridIndex = (currGridIndex + 1) % data.grids.size
                                     Logger.debug("click: index = $currGridIndex")
                                     dataGen(data.backgrounds[currGridIndex],
                                         data.grids[currGridIndex])
+*/
                                 }
                             )
                         } else {
@@ -149,10 +183,12 @@ class MainActivity : ComponentActivity() {
                                     interactionSource = interactionSource,
                                     indication = null
                                 ) {
+/*
                                     currGridIndex = (currGridIndex + 1) % data.grids.size
                                     Logger.debug("click: index = $currGridIndex")
                                     dataGen(data.backgrounds[currGridIndex],
                                         data.grids[currGridIndex])
+*/
                                 }
                             )
                         }
@@ -161,4 +197,26 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private lateinit var jack: Jack
+    private lateinit var jill: Jill
+
+    override fun onResume() {
+        super.onResume()
+
+        onlineTime = System.currentTimeMillis()
+
+        lifecycleScope.launch {
+            jack.discover(onlineTime)
+            jill.register(onlineTime)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        jack.stopDiscover()
+        jill.unregister()
+    }
+
 }
