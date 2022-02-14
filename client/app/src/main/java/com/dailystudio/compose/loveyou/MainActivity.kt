@@ -85,17 +85,19 @@ class MainActivity : ComponentActivity() {
 
             val coroutineScope = rememberCoroutineScope()
 
-            coroutineScope.launch {
-                data = JSONUtils.fromAsset(this@MainActivity,
-                    "data-mid-autumn.json", BoardData::class.java) ?: BoardData()
+            LaunchedEffect(key1 = "load", block = {
+                coroutineScope.launch {
+                    data = JSONUtils.fromAsset(this@MainActivity,
+                        "data-valentines-day.json", BoardData::class.java) ?: BoardData()
 
-                Logger.debug("data: $data")
+                    Logger.debug("data: $data")
 
-                currGridIndex = 0
-                dataGen(data.backgrounds[currGridIndex],
-                    data.grids[currGridIndex])
+                    currGridIndex = 0
+                    dataGen(data.backgrounds[currGridIndex],
+                        data.grids[currGridIndex])
 
-            }
+                }
+            })
 
             Compose520Theme(){
                 Scaffold(
