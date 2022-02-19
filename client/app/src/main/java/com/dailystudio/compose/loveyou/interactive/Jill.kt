@@ -10,22 +10,22 @@ import java.net.ServerSocket
 
 class Jill(context: Context) {
 
-    private val appContext: Context = context.applicationContext
-    private var nsdManager: NsdManager? = null
-    private var onlineTime: Long = 0
+    private var nsdManager: NsdManager? =
+        context.applicationContext.getSystemService(Context.NSD_SERVICE) as NsdManager
+
+    var onlineTime: Long = 0
+    var servicePort: Int = -1
 
     init {
-        nsdManager = appContext.getSystemService(Context.NSD_SERVICE) as NsdManager
         if (nsdManager == null) {
             Logger.warn("Network Service Discovery not supported!")
         }
     }
 
     @WorkerThread
-    fun register(time: Long) {
-        onlineTime = time
-
-        val autoAllocPort = allocatePort()
+    fun online() {
+        onlineTime = System.currentTimeMillis()
+        servicePort = allocatePort()
 
         val serviceInfo = NsdServiceInfo().apply {
             serviceName = buildString {
@@ -34,7 +34,7 @@ class Jill(context: Context) {
             }
 
             serviceType = JackAndJill.SERVICE_TYPE
-            port = autoAllocPort
+            port = servicePort
         }
 
         nsdManager?.registerService(
@@ -43,7 +43,7 @@ class Jill(context: Context) {
         )
     }
 
-    fun unregister() {
+    fun offline() {
         nsdManager?.unregisterService(registrationListener)
     }
 
@@ -59,20 +59,21 @@ class Jill(context: Context) {
     }
 
     private val registrationListener = object : NsdManager.RegistrationListener {
-        override fun onRegistrationFailed(p0: NsdServiceInfo?, errorCode: Int) {
-            Logger.error("jill online failed: err(%d)", errorCode)
+
+        override fun onRegistrationFailed(service: NsdServiceInfo?, errorCode: Int) {
+            Logger.error("Jill [${service?.serviceName}] online failed: err(%d)", errorCode)
         }
 
-        override fun onUnregistrationFailed(p0: NsdServiceInfo?, errorCode: Int) {
-            Logger.error("jill offline failed: err(%d)", errorCode)
+        override fun onUnregistrationFailed(service: NsdServiceInfo?, errorCode: Int) {
+            Logger.error("Jill [${service?.serviceName}] offline failed: err(%d)", errorCode)
         }
 
-        override fun onServiceRegistered(p0: NsdServiceInfo?) {
-            Logger.info("jill online: name = ${p0?.serviceName}, port = ${p0?.port}")
+        override fun onServiceRegistered(service: NsdServiceInfo?) {
+            Logger.info("Jill [${service?.serviceName}]\'s online: port = ${service?.port}")
         }
 
-        override fun onServiceUnregistered(p0: NsdServiceInfo?) {
-            Logger.info("jill offline: $p0")
+        override fun onServiceUnregistered(service: NsdServiceInfo?) {
+            Logger.info("Jill [${service?.serviceName}]\'s offline")
         }
 
     }

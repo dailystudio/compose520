@@ -24,7 +24,6 @@ import com.dailystudio.compose.loveyou.ui.BoardWithLayout
 import com.dailystudio.compose.loveyou.ui.theme.Compose520Theme
 import com.dailystudio.devbricksx.development.Logger
 import com.dailystudio.devbricksx.utils.JSONUtils
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -208,7 +207,7 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             jack.discover(onlineTime)
-            jill.register(onlineTime)
+            jill.online()
         }
     }
 
@@ -216,7 +215,7 @@ class MainActivity : ComponentActivity() {
         super.onPause()
 
         jack.stopDiscover()
-        jill.unregister()
+        jill.offline()
     }
 
 }
