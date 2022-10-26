@@ -1,5 +1,6 @@
 package com.dailystudio.compose.loveyou
 
+import android.annotation.SuppressLint
 import android.graphics.Point
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,6 +10,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +36,8 @@ class MainActivity : ComponentActivity() {
 
     private var onlineTime: Long = 0
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -152,7 +156,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) {
-                    Surface(color = MaterialTheme.colors.background) {
+                    Surface(color = MaterialTheme.colorScheme.background) {
                         val interactionSource = remember { MutableInteractionSource() }
                         if (useCanvasRender) {
                             BoardWithCanvas(

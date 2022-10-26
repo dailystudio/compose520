@@ -1,8 +1,8 @@
 package com.dailystudio.compose.loveyou.ui
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,7 +57,7 @@ fun BoardWithLayout(modifier: Modifier = Modifier,
 
         Text(stringResource(id = R.string.power_by_layout),
             color = Color.Gray,
-            style = MaterialTheme.typography.subtitle2,
+            style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.padding(4.dp)
         )
     }
